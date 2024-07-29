@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>Matrix Solver</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
+    <style>
+      body {
+        /* background-color: powderblue; */
+        padding: 50px;
+      }
+      h1 {
+        color: green;
+        text-align: center;
+      }
+      h4 {
+        text-align: center;
+      }
+      .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      #rows,
+      #columns {
+        height: 30px;
+        width: 170px;
+        margin-bottom: 15px;
+      }
+      .form-group {
+        margin: 10px;
+      }
+      .form-group label {
+        margin-bottom: 5px;
+      }
+      .form-group input {
+        width: 50px;
+        height: 30px;
+        text-align: center;
+      }
+      #matrix-inputs {
+        display: grid;
+        gap: 10px;
+      }
+      .matrix-display {
+        font-size: 1.5em;
+        white-space: pre;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Matrix Solver</h1>
+    <h4>Please enter the following:</h4>
+    <div class="container">
+      <form method="post" action="/">
+        <div class="form-group">
+          <label for="rows">Number of Rows:</label>
+          <input type="number" class="form-control" id="rows" name="rows" required />
+        </div>
+        <div class="form-group">
+          <label for="columns">Number of Columns:</label>
+          <input type="number" class="form-control" id="columns" name="columns" required />
+        </div>
+        <div id="matrix-inputs" class="form-group"></div>
+        <button type="button" class="btn btn-primary" onclick="generateMatrixInputs()">Generate Matrix Inputs</button>
+        <button type="submit" class="btn btn-success">Solve</button>
+      </form>
+
+      {% if input_matrix %}
+      <div class="mt-5">
+        <h3>Input Matrix</h3>
+        <p class="matrix-display">{{ input_matrix }}</p>
+      </div>
+      {% endif %}
+      {% if non_homogeneous_matrix %}
+      <div class="mt-5">
+        <h3>Non-Homogeneous Matrix (Augmented)</h3>
+        <pre class="matrix-display">{{ non_homogeneous_matrix }}</pre>
+      </div>
+      {% endif %}
+      {% if homogeneous_matrix %}
+      <div class="mt-5">
+        <h3>Homogeneous Matrix (Augmented)</h3>
+        <pre class="matrix-display">{{ homogeneous_matrix }}</pre>
+      </div>
+      {% endif %}
+      {% if rref_non_homogeneous %}
+      <div class="mt-5">
+        <h3>Reduced Echelon Form of Non-Homogeneous Matrix</h3>
+        <pre class="matrix-display">{{ rref_non_homogeneous }}</pre>
+      </div>
+      {% endif %}
+      {% if rref_homogeneous %}
+      <div class="mt-5">
+        <h3>Reduced Echelon Form of Homogeneous Matrix</h3>
+        <pre class="matrix-display">{{ rref_homogeneous }}</pre>
+      </div>
+      {% endif %}
+      {% if solution_set1 %}
+      <div class="mt-5">
+        <h3>Solution Set for Homogeneous System (Ax = 0)</h3>
+        <pre class="matrix-display">{{ solution_set1 }}</pre>
+      </div>
+      {% endif %}
+      {% if solution_set2 is not none and solution_set2 %}
+      <div class="mt-5">
+        <h3>Heterogeneous Solution Set (Ax = b)</h3>
+        <pre class="matrix-display">{{ solution_set2 }}</pre>
+      </div>
+      {% endif %}
+      <!-- Plotting the image -->
+      {% if plot_url %}
+      <div class="mt-5">
+        <h3>Solution Plot</h3>
+        <img src="data:image/png;base64,{{ plot_url }}" class="img-fluid" />
+      </div>
+      {% endif %}
+    </div>
+    <script>
+      function generateMatrixInputs() {
+        const rows = document.getElementById("rows").value;
+        const columns = document.getElementById("columns").value;
+        const matrixInputs = document.getElementById("matrix-inputs");
+        matrixInputs.innerHTML = "";
+
+        matrixInputs.style.gridTemplateColumns = `repeat(${parseInt(columns) + 1}, auto)`;
+
+        for (let i = 0; i < rows; i++) {
+          for (let j = 0; j < columns; j++) {
+            const input = document.createElement("input");
+            input.type = "number";
+            input.name = "matrix_values";
+            input.className = "form-control";
+            input.required = true;
+            matrixInputs.appendChild(input);
+          }
+          const input = document.createElement("input");
+          input.type = "number";
+          input.name = "b_values";
+          input.className = "form-control";
+          input.required = true;
+          matrixInputs.appendChild(input);
+        }
+      }
+    </script>
+  </body>
+</html>
